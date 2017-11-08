@@ -21,9 +21,6 @@ import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * 单独的视频播放页面
  * Created by shuyu on 2016/11/11.
@@ -33,7 +30,6 @@ public class PlayPickActivity extends AppCompatActivity {
     public final static String IMG_TRANSITION = "IMG_TRANSITION";
     public final static String TRANSITION = "TRANSITION";
 
-    @BindView(R.id.video_player)
     SmartPickVideo videoPlayer;
 
     OrientationUtils orientationUtils;
@@ -46,7 +42,7 @@ public class PlayPickActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_pick);
-        ButterKnife.bind(this);
+        videoPlayer = (SmartPickVideo)findViewById(R.id.video_player);
         isTransition = getIntent().getBooleanExtra(TRANSITION, false);
         init();
     }

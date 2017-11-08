@@ -16,22 +16,15 @@ import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
 import com.shuyu.gsyvideoplayer.listener.LockClickListener;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by shuyu on 2016/12/26.
  */
 
 public class WebDetailActivity extends GSYBaseActivityDetail {
 
-    @BindView(R.id.scroll_webView)
     ScrollWebView webView;
-    @BindView(R.id.web_player)
     PreViewGSYVideoPlayer webPlayer;
-    @BindView(R.id.web_top_layout)
     NestedScrollView webTopLayout;
-    @BindView(R.id.web_top_layout_video)
     RelativeLayout webTopLayoutVideo;
 
     private boolean isSamll;
@@ -40,8 +33,8 @@ public class WebDetailActivity extends GSYBaseActivityDetail {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_detail);
-        ButterKnife.bind(this);
 
+        initView();
 
         resolveNormalVideoUI();
 
@@ -93,6 +86,13 @@ public class WebDetailActivity extends GSYBaseActivityDetail {
 //            }
 //        });
 
+    }
+
+    private void initView() {
+        webView = (ScrollWebView) findViewById(R.id.scroll_webView);
+        webPlayer = (PreViewGSYVideoPlayer) findViewById(R.id.web_player);
+        webTopLayout = (NestedScrollView) findViewById(R.id.web_top_layout);
+        webTopLayoutVideo = (RelativeLayout) findViewById(R.id.web_top_layout_video);
     }
 
     @Override

@@ -14,7 +14,6 @@ import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * 单独的视频播放页面
@@ -25,7 +24,6 @@ public class PlayEmptyControlActivity extends AppCompatActivity {
     public final static String IMG_TRANSITION = "IMG_TRANSITION";
     public final static String TRANSITION = "TRANSITION";
 
-    @BindView(R.id.video_player)
     EmptyControlVideo videoPlayer;
 
     OrientationUtils orientationUtils;
@@ -38,7 +36,7 @@ public class PlayEmptyControlActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_empty_control);
-        ButterKnife.bind(this);
+        videoPlayer = (EmptyControlVideo)findViewById(R.id.video_player);
         isTransition = getIntent().getBooleanExtra(TRANSITION, false);
         init();
     }

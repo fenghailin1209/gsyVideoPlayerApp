@@ -1,17 +1,12 @@
 package com.example.gsyvideoplayer.holder;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.example.gsyvideoplayer.R;
-import com.example.gsyvideoplayer.adapter.ListVideoAdapter;
 import com.example.gsyvideoplayer.model.VideoModel;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by GUO on 2015/12/3.
@@ -21,9 +16,8 @@ public class RecyclerItemViewHolder extends RecyclerItemBaseHolder {
     public final static String TAG = "RecyclerView2List";
 
     protected Context context = null;
-    @BindView(R.id.list_item_container)
+//    @BindView(R.id.list_item_container)
     FrameLayout listItemContainer;
-    @BindView(R.id.list_item_btn)
     ImageView listItemBtn;
 
     ImageView imageView;
@@ -31,7 +25,10 @@ public class RecyclerItemViewHolder extends RecyclerItemBaseHolder {
     public RecyclerItemViewHolder(Context context, View v) {
         super(v);
         this.context = context;
-        ButterKnife.bind(this, v);
+
+        listItemContainer = (FrameLayout) v.findViewById(R.id.list_item_container) ;
+        listItemBtn = (ImageView) v.findViewById(R.id.list_item_btn);
+//        ButterKnife.bind(this, v);
         imageView = new ImageView(context);
     }
 

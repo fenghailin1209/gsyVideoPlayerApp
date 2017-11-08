@@ -8,17 +8,14 @@ import android.widget.RelativeLayout;
 
 import com.shuyu.gsyvideoplayer.GSYBaseActivityDetail;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
-import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
-import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.listener.LockClickListener;
 import com.shuyu.gsyvideoplayer.model.GSYVideoModel;
 import com.shuyu.gsyvideoplayer.video.ListGSYVideoPlayer;
+import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
+import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Activity可以继承GSYBaseActivityDetail实现详情模式的页面
@@ -29,11 +26,8 @@ import butterknife.ButterKnife;
 public class DetailListPlayer extends GSYBaseActivityDetail {
 
 
-    @BindView(R.id.post_detail_nested_scroll)
     NestedScrollView postDetailNestedScroll;
-    @BindView(R.id.detail_player)
     ListGSYVideoPlayer detailPlayer;
-    @BindView(R.id.activity_detail_player)
     RelativeLayout activityDetailPlayer;
 
 
@@ -41,8 +35,8 @@ public class DetailListPlayer extends GSYBaseActivityDetail {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deatil_list_player);
-        ButterKnife.bind(this);
-
+//        ButterKnife.bind(this);
+        initView();
         //普通模式
         initVideo();
 
@@ -81,6 +75,12 @@ public class DetailListPlayer extends GSYBaseActivityDetail {
             }
         });
 
+    }
+
+    private void initView() {
+         postDetailNestedScroll = (NestedScrollView) findViewById(R.id.post_detail_nested_scroll);
+       detailPlayer = (ListGSYVideoPlayer) findViewById(R.id.detail_player);
+         activityDetailPlayer = (RelativeLayout) findViewById(R.id.activity_detail_player);
     }
 
     @Override

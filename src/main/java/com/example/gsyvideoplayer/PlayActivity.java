@@ -21,8 +21,6 @@ import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * 单独的视频播放页面
@@ -33,8 +31,7 @@ public class PlayActivity extends AppCompatActivity {
     public final static String IMG_TRANSITION = "IMG_TRANSITION";
     public final static String TRANSITION = "TRANSITION";
 
-    @BindView(R.id.video_player)
-    SampleVideo videoPlayer;
+    private SampleVideo videoPlayer;
 
     OrientationUtils orientationUtils;
 
@@ -46,7 +43,7 @@ public class PlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-        ButterKnife.bind(this);
+        videoPlayer = (SampleVideo)findViewById(R.id.video_player);
         isTransition = getIntent().getBooleanExtra(TRANSITION, false);
         init();
     }

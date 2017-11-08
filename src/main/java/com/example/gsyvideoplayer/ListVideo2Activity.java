@@ -23,11 +23,11 @@ import butterknife.ButterKnife;
 
 public class ListVideo2Activity extends AppCompatActivity {
 
-    @BindView(R.id.video_list)
+//    @BindView(R.id.video_list)
     ListView videoList;
-    @BindView(R.id.video_full_container)
+//    @BindView(R.id.video_full_container)
     FrameLayout videoFullContainer;
-    @BindView(R.id.activity_list_video)
+//    @BindView(R.id.activity_list_video)
     RelativeLayout activityListVideo;
 
     ListVideoUtil listVideoUtil;
@@ -45,7 +45,12 @@ public class ListVideo2Activity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_video2);
-        ButterKnife.bind(this);
+
+        videoList = (ListView)findViewById(R.id.video_list);
+        videoFullContainer = (FrameLayout)findViewById(R.id.video_full_container);
+        activityListVideo = (RelativeLayout)findViewById(R.id.activity_list_video);
+
+//        ButterKnife.bind(this);
 
         listVideoUtil = new ListVideoUtil(this);
         listVideoUtil.setFullViewContainer(videoFullContainer);

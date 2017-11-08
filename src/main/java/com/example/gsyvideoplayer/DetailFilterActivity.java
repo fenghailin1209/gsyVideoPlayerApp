@@ -20,9 +20,10 @@ import com.example.gsyvideoplayer.effect.PixelationEffect;
 import com.example.gsyvideoplayer.utils.CommonUtil;
 import com.example.gsyvideoplayer.video.SampleControlVideo;
 import com.shuyu.gsyvideoplayer.GSYBaseActivityDetail;
-import com.shuyu.gsyvideoplayer.listener.GSYVideoGifSaveListener;
-import com.shuyu.gsyvideoplayer.render.view.GSYVideoGLView;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
+import com.shuyu.gsyvideoplayer.listener.GSYVideoGifSaveListener;
+import com.shuyu.gsyvideoplayer.listener.GSYVideoShotListener;
+import com.shuyu.gsyvideoplayer.listener.LockClickListener;
 import com.shuyu.gsyvideoplayer.render.effect.AutoFixEffect;
 import com.shuyu.gsyvideoplayer.render.effect.BarrelBlurEffect;
 import com.shuyu.gsyvideoplayer.render.effect.BlackAndWhiteEffect;
@@ -48,8 +49,7 @@ import com.shuyu.gsyvideoplayer.render.effect.SharpnessEffect;
 import com.shuyu.gsyvideoplayer.render.effect.TemperatureEffect;
 import com.shuyu.gsyvideoplayer.render.effect.TintEffect;
 import com.shuyu.gsyvideoplayer.render.effect.VignetteEffect;
-import com.shuyu.gsyvideoplayer.listener.GSYVideoShotListener;
-import com.shuyu.gsyvideoplayer.listener.LockClickListener;
+import com.shuyu.gsyvideoplayer.render.view.GSYVideoGLView;
 import com.shuyu.gsyvideoplayer.utils.Debuger;
 import com.shuyu.gsyvideoplayer.utils.FileUtils;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
@@ -61,9 +61,6 @@ import java.io.FileNotFoundException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * 滤镜
  * Activity可以继承GSYBaseActivityDetail实现详情模式的页面
@@ -73,32 +70,22 @@ import butterknife.ButterKnife;
 
 public class DetailFilterActivity extends GSYBaseActivityDetail {
 
-    @BindView(R.id.post_detail_nested_scroll)
     NestedScrollView postDetailNestedScroll;
 
-    @BindView(R.id.detail_player)
     SampleControlVideo detailPlayer;
 
-    @BindView(R.id.activity_detail_player)
     RelativeLayout activityDetailPlayer;
 
-    @BindView(R.id.change_filter)
     Button changeFilter;
 
-
-    @BindView(R.id.jump)
     Button jump;
 
-    @BindView(R.id.change_anima)
     Button anima;
 
-    @BindView(R.id.start_gif)
     Button startGif;
 
-    @BindView(R.id.stop_gif)
     Button stopGif;
 
-    @BindView(R.id.loadingView)
     View loadingView;
 
     private int type = 0;
@@ -131,8 +118,8 @@ public class DetailFilterActivity extends GSYBaseActivityDetail {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_filter);
-        ButterKnife.bind(this);
-
+//        ButterKnife.bind(this);
+        initView();
         backupRendType = GSYVideoType.getRenderType();
 
         //设置为GL播放模式，才能支持滤镜，注意此设置是全局的
@@ -237,6 +224,22 @@ public class DetailFilterActivity extends GSYBaseActivityDetail {
                 //do nothing
             }
         });
+    }
+
+    /**
+     * 初始化控件
+     */
+    private void initView() {
+        postDetailNestedScroll = (NestedScrollView) findViewById(R.id.post_detail_nested_scroll);
+        detailPlayer = (SampleControlVideo) findViewById(R.id.detail_player);
+        activityDetailPlayer = (RelativeLayout) findViewById(R.id.activity_detail_player);
+        changeFilter = (Button) findViewById(R.id.change_filter);
+        jump = (Button) findViewById(R.id.jump);
+        anima = (Button) findViewById(R.id.change_anima);
+        startGif = (Button) findViewById(R.id.start_gif);
+        stopGif = (Button) findViewById(R.id.stop_gif);
+        loadingView =  findViewById(R.id.loadingView);
+
     }
 
     @Override
@@ -378,88 +381,87 @@ public class DetailFilterActivity extends GSYBaseActivityDetail {
      */
     private void resolveTypeUI() {
         GSYVideoGLView.ShaderInterface effect = new NoEffect();
-        switch (type) {
-            case 0:
-                effect = new AutoFixEffect(deep);
-                break;
-            case 1:
-                effect = new PixelationEffect();
-                break;
-            case 2:
-                effect = new BlackAndWhiteEffect();
-                break;
-            case 3:
-                effect = new ContrastEffect(deep);
-                break;
-            case 4:
-                effect = new CrossProcessEffect();
-                break;
-            case 5:
-                effect = new DocumentaryEffect();
-                break;
-            case 6:
-                effect = new DuotoneEffect(Color.BLUE, Color.YELLOW);
-                break;
-            case 7:
-                effect = new FillLightEffect(deep);
-                break;
-            case 8:
-                effect = new GammaEffect(deep);
-                break;
-            case 9:
-                effect = new GrainEffect(deep);
-                break;
-            case 10:
-                effect = new GrainEffect(deep);
-                break;
-            case 11:
-                effect = new HueEffect(deep);
-                break;
-            case 12:
-                effect = new InvertColorsEffect();
-                break;
-            case 13:
-                effect = new LamoishEffect();
-                break;
-            case 14:
-                effect = new PosterizeEffect();
-                break;
-            case 15:
-                effect = new BarrelBlurEffect();
-                break;
-            case 16:
-                effect = new SaturationEffect(deep);
-                break;
-            case 17:
-                effect = new SepiaEffect();
-                break;
-            case 18:
-                effect = new SharpnessEffect(deep);
-                break;
-            case 19:
-                effect = new TemperatureEffect(deep);
-                break;
-            case 20:
-                effect = new TintEffect(Color.GREEN);
-                break;
-            case 21:
-                effect = new VignetteEffect(deep);
-                break;
-            case 22:
-                effect = new NoEffect();
-                break;
-            case 23:
-                effect = new OverlayEffect();
-                break;
-            case 24:
-                effect = new SampleBlurEffect(4.0f);
-                break;
-            case 25:
-                effect = new GaussianBlurEffect(6.0f, GaussianBlurEffect.TYPEXY);
-                break;
-            case 26:
-                effect = new BrightnessEffect(deep);
-                break;
+        if (type == 0) {
+            effect = new AutoFixEffect(deep);
+
+        } else if (type == 1) {
+            effect = new PixelationEffect();
+
+        } else if (type == 2) {
+            effect = new BlackAndWhiteEffect();
+
+        } else if (type == 3) {
+            effect = new ContrastEffect(deep);
+
+        } else if (type == 4) {
+            effect = new CrossProcessEffect();
+
+        } else if (type == 5) {
+            effect = new DocumentaryEffect();
+
+        } else if (type == 6) {
+            effect = new DuotoneEffect(Color.BLUE, Color.YELLOW);
+
+        } else if (type == 7) {
+            effect = new FillLightEffect(deep);
+
+        } else if (type == 8) {
+            effect = new GammaEffect(deep);
+
+        } else if (type == 9) {
+            effect = new GrainEffect(deep);
+
+        } else if (type == 10) {
+            effect = new GrainEffect(deep);
+
+        } else if (type == 11) {
+            effect = new HueEffect(deep);
+
+        } else if (type == 12) {
+            effect = new InvertColorsEffect();
+
+        } else if (type == 13) {
+            effect = new LamoishEffect();
+
+        } else if (type == 14) {
+            effect = new PosterizeEffect();
+
+        } else if (type == 15) {
+            effect = new BarrelBlurEffect();
+
+        } else if (type == 16) {
+            effect = new SaturationEffect(deep);
+
+        } else if (type == 17) {
+            effect = new SepiaEffect();
+
+        } else if (type == 18) {
+            effect = new SharpnessEffect(deep);
+
+        } else if (type == 19) {
+            effect = new TemperatureEffect(deep);
+
+        } else if (type == 20) {
+            effect = new TintEffect(Color.GREEN);
+
+        } else if (type == 21) {
+            effect = new VignetteEffect(deep);
+
+        } else if (type == 22) {
+            effect = new NoEffect();
+
+        } else if (type == 23) {
+            effect = new OverlayEffect();
+
+        } else if (type == 24) {
+            effect = new SampleBlurEffect(4.0f);
+
+        } else if (type == 25) {
+            effect = new GaussianBlurEffect(6.0f, GaussianBlurEffect.TYPEXY);
+
+        } else if (type == 26) {
+            effect = new BrightnessEffect(deep);
+
         }
         detailPlayer.setEffectFilter(effect);
         type++;
@@ -521,22 +523,18 @@ public class DetailFilterActivity extends GSYBaseActivityDetail {
         @Override
         public void run() {
             float[] transform = new float[16];
-            switch (percentageType) {
-                case 1:
-                    //给予x变化
-                    Matrix.setRotateM(transform, 0, 360 * percentage / 100, 1.0f, 0, 0.0f);
-                    break;
-                case 2:
-                    //给予y变化
-                    Matrix.setRotateM(transform, 0, 360 * percentage / 100, 0.0f, 1.0f, 0.0f);
-                    break;
-                case 3:
-                    //给予z变化
-                    Matrix.setRotateM(transform, 0, 360 * percentage / 100, 0.0f, 0, 1.0f);
-                    break;
-                case 4:
-                    Matrix.setRotateM(transform, 0, 360, 0.0f, 0, 1.0f);
-                    break;
+            if (percentageType == 1) {//给予x变化
+                Matrix.setRotateM(transform, 0, 360 * percentage / 100, 1.0f, 0, 0.0f);
+
+            } else if (percentageType == 2) {//给予y变化
+                Matrix.setRotateM(transform, 0, 360 * percentage / 100, 0.0f, 1.0f, 0.0f);
+
+            } else if (percentageType == 3) {//给予z变化
+                Matrix.setRotateM(transform, 0, 360 * percentage / 100, 0.0f, 0, 1.0f);
+
+            } else if (percentageType == 4) {
+                Matrix.setRotateM(transform, 0, 360, 0.0f, 0, 1.0f);
+
             }
             //设置渲染transform
             detailPlayer.setMatrixGL(transform);

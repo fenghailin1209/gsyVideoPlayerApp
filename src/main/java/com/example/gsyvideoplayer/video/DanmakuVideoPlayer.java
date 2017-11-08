@@ -11,10 +11,10 @@ import com.example.gsyvideoplayer.R;
 import com.example.gsyvideoplayer.adapter.DanamakuAdapter;
 import com.example.gsyvideoplayer.utils.BiliDanmukuParser;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
-import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.utils.Debuger;
-import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
+import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
+import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -135,14 +135,14 @@ public class DanmakuVideoPlayer extends StandardGSYVideoPlayer {
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        switch (v.getId()) {
-            case R.id.send_danmaku:
-                addDanmaku(true);
-                break;
-            case R.id.toogle_danmaku:
-                mDanmaKuShow = !mDanmaKuShow;
-                resolveDanmakuShow();
-                break;
+        int i = v.getId();
+        if (i == R.id.send_danmaku) {
+            addDanmaku(true);
+
+        } else if (i == R.id.toogle_danmaku) {
+            mDanmaKuShow = !mDanmaKuShow;
+            resolveDanmakuShow();
+
         }
     }
 

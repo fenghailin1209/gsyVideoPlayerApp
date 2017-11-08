@@ -22,14 +22,10 @@ import com.shuyu.gsyvideoplayer.utils.ListVideoUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class RecyclerView2Activity extends AppCompatActivity {
 
-    @BindView(R.id.list_item_recycler)
     RecyclerView listItemRecycler;
-    @BindView(R.id.video_full_container)
     FrameLayout videoFullContainer;
 
     LinearLayoutManager linearLayoutManager;
@@ -53,7 +49,8 @@ public class RecyclerView2Activity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycler_view2);
-        ButterKnife.bind(this);
+        listItemRecycler = (RecyclerView)findViewById(R.id.list_item_recycler);
+        videoFullContainer = (FrameLayout)findViewById(R.id.video_full_container);
 
         initView();
 

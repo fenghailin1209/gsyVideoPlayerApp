@@ -25,18 +25,18 @@ import butterknife.ButterKnife;
 
 public class InputUrlDetailActivity extends AppCompatActivity {
 
-    @BindView(R.id.post_detail_nested_scroll)
+//    @BindView(R.id.post_detail_nested_scroll)
     NestedScrollView postDetailNestedScroll;
 
     //推荐使用StandardGSYVideoPlayer，功能一致
     //CustomGSYVideoPlayer部分功能处于试验阶段
-    @BindView(R.id.detail_player)
+//    @BindView(R.id.detail_player)
     LandLayoutVideo detailPlayer;
 
-    @BindView(R.id.activity_detail_player)
+//    @BindView(R.id.activity_detail_player)
     RelativeLayout activityDetailPlayer;
 
-    @BindView(R.id.inputUrl)
+//    @BindView(R.id.inputUrl)
     Button inputUrl;
 
 
@@ -53,7 +53,12 @@ public class InputUrlDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_url_detail);
-        ButterKnife.bind(this);
+//        ButterKnife.bind(this);
+
+        postDetailNestedScroll = (NestedScrollView) findViewById(R.id.post_detail_nested_scroll);
+        detailPlayer = (LandLayoutVideo) findViewById(R.id.detail_player);
+        activityDetailPlayer = (RelativeLayout) findViewById(R.id.activity_detail_player);
+        inputUrl = (Button) findViewById(R.id.inputUrl);
 
         url = "http://baobab.wdjcdn.com/14564977406580.mp4";
 

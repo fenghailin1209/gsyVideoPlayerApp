@@ -28,13 +28,13 @@ import butterknife.ButterKnife;
 
 public class DanmkuVideoActivity extends AppCompatActivity {
 
-    @BindView(R.id.post_detail_nested_scroll)
+//    @BindView(R.id.post_detail_nested_scroll)
     NestedScrollView postDetailNestedScroll;
 
-    @BindView(R.id.danmaku_player)
+//    @BindView(R.id.danmaku_player)
     DanmakuVideoPlayer danmakuVideoPlayer;
 
-    @BindView(R.id.activity_detail_player)
+//    @BindView(R.id.activity_detail_player)
     RelativeLayout activityDetailPlayer;
 
     private boolean isPlay;
@@ -46,8 +46,8 @@ public class DanmkuVideoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_danmaku_layout);
-        ButterKnife.bind(this);
-
+//        ButterKnife.bind(this);
+        initView();
 
         //使用自定义的全屏切换图片，!!!注意xml布局中也需要设置为一样的
         //必须在setUp之前设置
@@ -128,6 +128,14 @@ public class DanmkuVideoActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    public void initView(){
+
+        postDetailNestedScroll = (NestedScrollView)findViewById(R.id.post_detail_nested_scroll);
+        danmakuVideoPlayer = (DanmakuVideoPlayer)findViewById(R.id.danmaku_player);
+        activityDetailPlayer = (RelativeLayout)findViewById(R.id.activity_detail_player);
     }
 
     @Override

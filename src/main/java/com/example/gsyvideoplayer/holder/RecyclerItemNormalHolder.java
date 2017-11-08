@@ -15,9 +15,6 @@ import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by guoshuyu on 2017/1/9.
  */
@@ -28,7 +25,7 @@ public class RecyclerItemNormalHolder extends RecyclerItemBaseHolder {
 
     protected Context context = null;
 
-    @BindView(R.id.video_item_player)
+//    @BindView(R.id.video_item_player)
     StandardGSYVideoPlayer gsyVideoPlayer;
 
     ImageView imageView;
@@ -38,7 +35,8 @@ public class RecyclerItemNormalHolder extends RecyclerItemBaseHolder {
     public RecyclerItemNormalHolder(Context context, View v) {
         super(v);
         this.context = context;
-        ButterKnife.bind(this, v);
+//        ButterKnife.bind(this, v);
+        gsyVideoPlayer = (StandardGSYVideoPlayer)v.findViewById(R.id.video_item_player);
         imageView = new ImageView(context);
         gsyVideoOptionBuilder = new GSYVideoOptionBuilder();
     }

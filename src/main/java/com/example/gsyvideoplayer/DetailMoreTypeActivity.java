@@ -1,8 +1,6 @@
 package com.example.gsyvideoplayer;
 
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
@@ -16,18 +14,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.gsyvideoplayer.listener.SampleListener;
 import com.example.gsyvideoplayer.model.SwitchVideoModel;
 import com.example.gsyvideoplayer.video.SampleVideo;
-import com.shuyu.gsyvideoplayer.utils.Debuger;
-import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.listener.LockClickListener;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
+import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by guoshuyu on 2017/6/18.
@@ -35,15 +29,12 @@ import butterknife.ButterKnife;
  */
 
 public class DetailMoreTypeActivity extends AppCompatActivity {
-    @BindView(R.id.post_detail_nested_scroll)
     NestedScrollView postDetailNestedScroll;
 
     //推荐使用StandardGSYVideoPlayer，功能一致
     //CustomGSYVideoPlayer部分功能处于试验阶段
-    @BindView(R.id.detail_player)
     SampleVideo detailPlayer;
 
-    @BindView(R.id.activity_detail_player)
     RelativeLayout activityDetailPlayer;
 
     private boolean isPlay;
@@ -60,8 +51,8 @@ public class DetailMoreTypeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_more_type);
-        ButterKnife.bind(this);
-
+//        ButterKnife.bind(this);
+        initView();
         String source1 = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
         //String source1 = "http://baobab.wdjcdn.com/14564977406580.mp4";
         String name = "普通";
@@ -149,6 +140,13 @@ public class DetailMoreTypeActivity extends AppCompatActivity {
         });
 
         loadFirstFrameCover(source1);
+    }
+
+    private void initView() {
+         postDetailNestedScroll = (NestedScrollView) findViewById(R.id.post_detail_nested_scroll);
+         detailPlayer = (SampleVideo) findViewById(R.id.detail_player);
+        activityDetailPlayer = (RelativeLayout) findViewById(R.id.activity_detail_player);
+
     }
 
     @Override

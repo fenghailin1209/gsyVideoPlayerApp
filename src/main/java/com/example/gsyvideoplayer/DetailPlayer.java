@@ -16,21 +16,14 @@ import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 
 /**
  * 详情界面
  */
 public class DetailPlayer extends AppCompatActivity {
 
-    @BindView(R.id.post_detail_nested_scroll)
     NestedScrollView postDetailNestedScroll;
-    @BindView(R.id.detail_player)
     StandardGSYVideoPlayer detailPlayer;
-
-    @BindView(R.id.activity_detail_player)
     RelativeLayout activityDetailPlayer;
 
     private boolean isPlay;
@@ -42,8 +35,8 @@ public class DetailPlayer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_player);
-        ButterKnife.bind(this);
-
+//        ButterKnife.bind(this);
+        initView();
         String url = "http://baobab.wdjcdn.com/14564977406580.mp4";
 
         //String url = "http://hcjs2ra2rytd8v8np1q.exp.bcevod.com/mda-hegtjx8n5e8jt9zv/mda-hegtjx8n5e8jt9zv.m3u8";
@@ -152,6 +145,12 @@ public class DetailPlayer extends AppCompatActivity {
             }
         });
         detailPlayer.startPlayLogic();
+    }
+
+    private void initView() {
+         postDetailNestedScroll = (NestedScrollView) findViewById(R.id.post_detail_nested_scroll);
+        detailPlayer = (StandardGSYVideoPlayer) findViewById(R.id.detail_player);
+        activityDetailPlayer = (RelativeLayout) findViewById(R.id.activity_detail_player);
     }
 
     @Override

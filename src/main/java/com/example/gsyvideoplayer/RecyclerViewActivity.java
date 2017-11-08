@@ -31,14 +31,10 @@ import com.volokh.danylo.visibility_utils.scroll_utils.RecyclerViewItemPositionG
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class RecyclerViewActivity extends AppCompatActivity implements VisibilityItem.ItemCallback {
 
 
     private static final String TAG = RecyclerViewActivity.class.getSimpleName();
-    @BindView(R.id.list_item_recycler)
     RecyclerView videoList;
 
     LinearLayoutManager mLayoutManager;
@@ -71,7 +67,7 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycler_view);
-        ButterKnife.bind(this);
+        videoList = (RecyclerView)findViewById(R.id.list_item_recycler);
 
         resolveData();
 

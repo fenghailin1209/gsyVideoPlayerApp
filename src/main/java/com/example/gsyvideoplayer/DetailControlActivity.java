@@ -40,32 +40,32 @@ import butterknife.ButterKnife;
 
 public class DetailControlActivity extends GSYBaseActivityDetail {
 
-    @BindView(R.id.post_detail_nested_scroll)
+//    @BindView(R.id.post_detail_nested_scroll)
     NestedScrollView postDetailNestedScroll;
 
-    @BindView(R.id.detail_player)
+//    @BindView(R.id.detail_player)
     SampleControlVideo detailPlayer;
 
-    @BindView(R.id.activity_detail_player)
+//    @BindView(R.id.activity_detail_player)
     RelativeLayout activityDetailPlayer;
 
-    @BindView(R.id.change_speed)
+//    @BindView(R.id.change_speed)
     Button changeSpeed;
 
 
-    @BindView(R.id.jump)
+//    @BindView(R.id.jump)
     Button jump;
 
-    @BindView(R.id.shot)
+//    @BindView(R.id.shot)
     Button shot;
 
-    @BindView(R.id.start_gif)
+//    @BindView(R.id.start_gif)
     Button startGif;
 
-    @BindView(R.id.stop_gif)
+//    @BindView(R.id.stop_gif)
     Button stopGif;
 
-    @BindView(R.id.loadingView)
+//    @BindView(R.id.loadingView)
     View loadingView;
 
     private String url = "http://baobab.wdjcdn.com/14564977406580.mp4";
@@ -78,8 +78,8 @@ public class DetailControlActivity extends GSYBaseActivityDetail {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_control);
-        ButterKnife.bind(this);
-
+//        ButterKnife.bind(this);
+    initView();
         resolveNormalVideoUI();
 
         initVideoBuilderMode();
@@ -175,6 +175,22 @@ public class DetailControlActivity extends GSYBaseActivityDetail {
         super.onDestroy();
         mGifCreateHelper.cancelTask();
     }
+
+    public void initView(){
+
+
+        postDetailNestedScroll = (NestedScrollView)findViewById(R.id.post_detail_nested_scroll);
+        detailPlayer = (SampleControlVideo)findViewById(R.id.detail_player);
+        activityDetailPlayer = (RelativeLayout)findViewById(R.id.activity_detail_player);
+        changeSpeed = (Button)findViewById(R.id.change_speed);
+        jump = (Button)findViewById(R.id.jump);
+        shot = (Button)findViewById(R.id.shot);
+        startGif = (Button)findViewById(R.id.start_gif);
+        stopGif = (Button)findViewById(R.id.stop_gif);
+        loadingView = findViewById(R.id.loadingView);
+
+    }
+
 
     /**
      * 是否启动旋转横屏，true表示启动

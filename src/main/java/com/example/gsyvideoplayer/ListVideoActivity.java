@@ -14,14 +14,10 @@ import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ListVideoActivity extends AppCompatActivity {
 
-    @BindView(R.id.video_list)
     ListView videoList;
-    @BindView(R.id.activity_list_video)
     RelativeLayout activityListVideo;
 
     ListNormalAdapter listNormalAdapter;
@@ -36,8 +32,9 @@ public class ListVideoActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_video);
-        ButterKnife.bind(this);
-
+        videoList = (ListView)findViewById(R.id.video_list);
+        activityListVideo = (RelativeLayout)findViewById(R.id.activity_list_video);
+        RelativeLayout activityListVideo;
         listNormalAdapter = new ListNormalAdapter(this);
         videoList.setAdapter(listNormalAdapter);
 
