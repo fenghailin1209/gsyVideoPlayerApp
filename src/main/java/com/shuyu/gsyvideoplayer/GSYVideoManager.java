@@ -12,6 +12,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Surface;
 
 import com.danikula.videocache.CacheListener;
@@ -610,6 +611,7 @@ public class GSYVideoManager implements IMediaPlayer.OnPreparedListener, IMediaP
     public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
         currentVideoWidth = mp.getVideoWidth();
         currentVideoHeight = mp.getVideoHeight();
+        Log.i("","--->>>onVideoSizeChanged mVideoWidth2:"+currentVideoWidth+",mVideoHeight:"+currentVideoHeight);
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {

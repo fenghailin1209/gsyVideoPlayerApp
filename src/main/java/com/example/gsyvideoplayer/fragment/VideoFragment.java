@@ -23,8 +23,8 @@ import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
+
 
 public class VideoFragment extends Fragment {
 

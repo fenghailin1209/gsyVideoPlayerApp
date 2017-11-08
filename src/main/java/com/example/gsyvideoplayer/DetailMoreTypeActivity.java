@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.gsyvideoplayer.listener.SampleListener;
 import com.example.gsyvideoplayer.model.SwitchVideoModel;
 import com.example.gsyvideoplayer.video.SampleVideo;
@@ -253,13 +252,17 @@ public class DetailMoreTypeActivity extends AppCompatActivity {
         }*/
 
         //可以参考Glide，内部也是封装了MediaMetadataRetriever
+//        Glide.with(this.getApplicationContext())
+//                .setDefaultRequestOptions(
+//                        new RequestOptions()
+//                                .frame(1000000)
+//                                .centerCrop()
+//                                .error(R.mipmap.xxx2)
+//                                .placeholder(R.mipmap.xxx1))
+//                .load(url)
+//                .into(coverImageView);
+
         Glide.with(this.getApplicationContext())
-                .setDefaultRequestOptions(
-                        new RequestOptions()
-                                .frame(1000000)
-                                .centerCrop()
-                                .error(R.mipmap.xxx2)
-                                .placeholder(R.mipmap.xxx1))
                 .load(url)
                 .into(coverImageView);
     }

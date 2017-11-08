@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.gsyvideoplayer.effect.BitmapIconEffect;
 import com.example.gsyvideoplayer.effect.GSYVideoGLViewCustomRender;
 import com.example.gsyvideoplayer.effect.PixelationEffect;
@@ -359,13 +358,17 @@ public class DetailFilterActivity extends GSYBaseActivityDetail {
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setImageResource(R.mipmap.xxx1);
 
+//        Glide.with(this.getApplicationContext())
+//                .setDefaultRequestOptions(
+//                        new RequestOptions()
+//                                .frame(3000000)
+//                                .centerCrop()
+//                                .error(R.mipmap.xxx2)
+//                                .placeholder(R.mipmap.xxx1))
+//                .load(url)
+//                .into(imageView);
+
         Glide.with(this.getApplicationContext())
-                .setDefaultRequestOptions(
-                        new RequestOptions()
-                                .frame(3000000)
-                                .centerCrop()
-                                .error(R.mipmap.xxx2)
-                                .placeholder(R.mipmap.xxx1))
                 .load(url)
                 .into(imageView);
     }

@@ -18,8 +18,8 @@ import com.shuyu.gsyvideoplayer.utils.CommonUtil;
 import com.shuyu.gsyvideoplayer.utils.Debuger;
 import com.shuyu.gsyvideoplayer.utils.ListVideoUtil;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
+
 
 public class ListVideo2Activity extends AppCompatActivity {
 

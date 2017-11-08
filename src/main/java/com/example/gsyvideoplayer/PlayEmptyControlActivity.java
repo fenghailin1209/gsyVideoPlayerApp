@@ -13,7 +13,7 @@ import com.example.gsyvideoplayer.video.EmptyControlVideo;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
-import butterknife.BindView;
+
 
 /**
  * 单独的视频播放页面

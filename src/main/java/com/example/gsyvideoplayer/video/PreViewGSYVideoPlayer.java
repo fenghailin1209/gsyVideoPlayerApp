@@ -7,7 +7,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.gsyvideoplayer.R;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.CommonUtil;
@@ -154,15 +153,19 @@ public class PreViewGSYVideoPlayer extends NormalGSYVideoPlayer {
     private void showPreView(String url, long time) {
         int width = CommonUtil.dip2px(getContext(), 150);
         int height = CommonUtil.dip2px(getContext(), 100);
+//        Glide.with(getContext().getApplicationContext())
+//                .setDefaultRequestOptions(
+//                        new RequestOptions()
+//                                //这里限制了只从缓存读取
+//                                .onlyRetrieveFromCache(true)
+//                                .frame(1000 * time)
+//                                .override(width, height)
+//                                .dontAnimate()
+//                                .centerCrop())
+//                .load(url)
+//                .into(mPreView);
+
         Glide.with(getContext().getApplicationContext())
-                .setDefaultRequestOptions(
-                        new RequestOptions()
-                                //这里限制了只从缓存读取
-                                .onlyRetrieveFromCache(true)
-                                .frame(1000 * time)
-                                .override(width, height)
-                                .dontAnimate()
-                                .centerCrop())
                 .load(url)
                 .into(mPreView);
     }
@@ -173,14 +176,13 @@ public class PreViewGSYVideoPlayer extends NormalGSYVideoPlayer {
             int time = i * getDuration() / 100;
             int width = CommonUtil.dip2px(getContext(), 150);
             int height = CommonUtil.dip2px(getContext(), 100);
-            Glide.with(getContext().getApplicationContext())
-                    .setDefaultRequestOptions(
-                            new RequestOptions()
-                                    .frame(1000 * time)
-                                    .override(width, height)
-                                    .centerCrop())
-                    .load(url).preload(width, height);
-
+//            Glide.with(getContext().getApplicationContext())
+//                    .setDefaultRequestOptions(
+//                            new RequestOptions()
+//                                    .frame(1000 * time)
+//                                    .override(width, height)
+//                                    .centerCrop())
+//                    .load(url).preload(width, height);
         }
     }
 }

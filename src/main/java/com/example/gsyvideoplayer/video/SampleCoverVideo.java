@@ -5,10 +5,6 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.VideoBitmapDecoder;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.gsyvideoplayer.R;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
@@ -52,13 +48,16 @@ public class SampleCoverVideo extends StandardGSYVideoPlayer {
     public void loadCoverImage(String url, int res) {
         mUrl = url;
         mDefaultRes = res;
+//        Glide.with(getContext().getApplicationContext())
+//                .setDefaultRequestOptions(
+//                        new RequestOptions()
+//                                .frame(1000000)
+//                                .centerCrop()
+//                                .error(res)
+//                                .placeholder(res))
+//                .load(url)
+//                .into(mCoverImage);
         Glide.with(getContext().getApplicationContext())
-                .setDefaultRequestOptions(
-                        new RequestOptions()
-                                .frame(1000000)
-                                .centerCrop()
-                                .error(res)
-                                .placeholder(res))
                 .load(url)
                 .into(mCoverImage);
     }

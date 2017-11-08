@@ -17,8 +17,8 @@ import com.shuyu.gsyvideoplayer.listener.LockClickListener;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
+
 
 /**
  * Created by guoshuyu on 2017/2/19.

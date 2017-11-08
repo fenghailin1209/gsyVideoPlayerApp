@@ -1,8 +1,6 @@
 package com.example.gsyvideoplayer.video;
 
 import android.content.Context;
-import android.graphics.Matrix;
-import android.graphics.SurfaceTexture;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import com.example.gsyvideoplayer.view.LoadingDialog;
 import com.example.gsyvideoplayer.view.SwitchVideoTypeDialog;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.listener.GSYMediaPlayerListener;
-import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;

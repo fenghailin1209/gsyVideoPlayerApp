@@ -20,8 +20,8 @@ import com.shuyu.gsyvideoplayer.listener.LockClickListener;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
+
 
 public class InputUrlDetailActivity extends AppCompatActivity {
 

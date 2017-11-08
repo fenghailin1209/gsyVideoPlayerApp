@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.gsyvideoplayer.utils.CommonUtil;
 import com.example.gsyvideoplayer.utils.JumpUtils;
 import com.example.gsyvideoplayer.video.SampleControlVideo;
@@ -26,9 +25,6 @@ import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * sampleVideo支持全屏与非全屏切换的清晰度，旋转，镜像等功能.
@@ -271,13 +267,17 @@ public class DetailControlActivity extends GSYBaseActivityDetail {
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setImageResource(R.mipmap.xxx1);
 
+//        Glide.with(this.getApplicationContext())
+//                .setDefaultRequestOptions(
+//                        new RequestOptions()
+//                                .frame(3000000)
+//                                .centerCrop()
+//                                .error(R.mipmap.xxx2)
+//                                .placeholder(R.mipmap.xxx1))
+//                .load(url)
+//                .into(imageView);
+
         Glide.with(this.getApplicationContext())
-                .setDefaultRequestOptions(
-                        new RequestOptions()
-                                .frame(3000000)
-                                .centerCrop()
-                                .error(R.mipmap.xxx2)
-                                .placeholder(R.mipmap.xxx1))
                 .load(url)
                 .into(imageView);
     }
