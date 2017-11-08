@@ -4,8 +4,8 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.View;
 
-import com.example.gsyvideoplayer.holder.RecyclerItemNormalHolder;
 import com.volokh.danylo.visibility_utils.items.ListItem;
+import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 
 /**
  * Created by danylo.volokh on 06.01.2016.
@@ -17,16 +17,16 @@ public class VisibilityItem implements ListItem {
 
     private final Rect mCurrentViewRect = new Rect();
     private final ItemCallback mItemCallback;
-    private RecyclerItemNormalHolder holder;
+    private ItemViewDelegate itemViewDelegate;
 
-    public void onBindViewHolder(RecyclerItemNormalHolder holder) {
-        this.holder = holder;
+    public void onBindViewHolder(ItemViewDelegate itemViewDelegate) {
+        this.itemViewDelegate = itemViewDelegate;
     }
 
 
     public interface ItemCallback {
         void makeToast(String text);
-        void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition,RecyclerItemNormalHolder holder);
+        void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition,ItemViewDelegate itemViewDelegate);
     }
 
     public VisibilityItem(ItemCallback callback) {
@@ -80,7 +80,7 @@ public class VisibilityItem implements ListItem {
 //        }).start();
 
         mItemCallback.makeToast("New Active View at position " + newActiveViewPosition);
-        mItemCallback.onActiveViewChangedActive(newActiveView, newActiveViewPosition,holder);
+        mItemCallback.onActiveViewChangedActive(newActiveView, newActiveViewPosition,itemViewDelegate);
     }
 
 

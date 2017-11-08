@@ -1,8 +1,7 @@
-package com.example.gsyvideoplayer.holder;
+package com.example.gsyvideoplayer.delagate;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,44 +14,48 @@ import com.example.gsyvideoplayer.utils.JumpUtils;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
+import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 /**
- * Created by guoshuyu on 2017/1/9.
+ * Created by Administrator on 2017/11/8.
  */
 
-public class RecyclerItemNormalHolder extends RecyclerView.ViewHolder {
+public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
 
-    public final static String TAG = RecyclerItemNormalHolder.class.getSimpleName();
+    public final static String TAG = TopicVideoItemDelagate.class.getSimpleName();
 
-    protected Context context = null;
+    private StandardGSYVideoPlayer gsyVideoPlayer;
+    private Context context;
+    private ImageView imageView;
+    private GSYVideoOptionBuilder gsyVideoOptionBuilder;
 
     public StandardGSYVideoPlayer getGsyVideoPlayer() {
         return gsyVideoPlayer;
     }
 
-    //    @BindView(R.id.video_item_player)
-    StandardGSYVideoPlayer gsyVideoPlayer;
-
-    ImageView imageView;
-
-    GSYVideoOptionBuilder gsyVideoOptionBuilder;
-
-    public RecyclerItemNormalHolder(Context context, View v) {
-        super(v);
-        this.context = context;
-//        ButterKnife.bind(this, v);
-        gsyVideoPlayer = (StandardGSYVideoPlayer)v.findViewById(R.id.video_item_player);
+    public TopicVideoItemDelagate(Context context) {
         imageView = new ImageView(context);
         gsyVideoOptionBuilder = new GSYVideoOptionBuilder();
+        this.context = context;
     }
 
-    public void autoPlay() {
-        if (gsyVideoPlayer != null) {
-            gsyVideoPlayer.startPlayLogic();
-        }
+    @Override
+    public int getItemViewLayoutId() {
+        return R.layout.list_video_item_normal;
     }
 
-    public void onBind(final int position, VideoModel videoModel) {
+    @Override
+    public boolean isForViewType(VideoModel item, int position) {
+        return item.getType().equals("3");
+    }
+
+    @Override
+    public void convert(ViewHolder holder, VideoModel item, int position) {
+        //目的是当视频item可见的时候回调出去
+        item.onBindViewHolder(this);
+
+        gsyVideoPlayer = holder.getView(R.id.video_item_player);
         //fhl add 20171107
         gsyVideoPlayer.setIsCanTouchChangeView(false);
         gsyVideoPlayer.setPrepareFinishIsShowStartButton(false);
@@ -77,14 +80,9 @@ public class RecyclerItemNormalHolder extends RecyclerView.ViewHolder {
             viewGroup.removeView(imageView);
         }
         String url;
-        String title;
-        if (position % 2 == 0) {
-            url = "http://baobab.wdjcdn.com/14564977406580.mp4";
-            title = "这是title";
-        } else {
-            url = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
-            title = "哦？Title？";
-        }
+        String title = "这是title";
+        url = item.getUrl();
+
         gsyVideoOptionBuilder
                 .setIsTouchWiget(false)
                 .setThumbImageView(imageView)
@@ -149,4 +147,9 @@ public class RecyclerItemNormalHolder extends RecyclerView.ViewHolder {
         standardGSYVideoPlayer.startWindowFullscreen(context, true, true);
     }
 
+    public void autoPlay() {
+        if (gsyVideoPlayer != null) {
+            gsyVideoPlayer.startPlayLogic();
+        }
+    }
 }

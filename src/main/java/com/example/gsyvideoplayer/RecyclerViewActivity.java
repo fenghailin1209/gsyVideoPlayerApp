@@ -3,20 +3,18 @@ package com.example.gsyvideoplayer;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Explode;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Toast;
 
-import com.example.gsyvideoplayer.adapter.RecyclerBaseAdapter;
-import com.example.gsyvideoplayer.adapter.RecyclerNormalAdapter;
+import com.example.gsyvideoplayer.delagate.TopicCommonItemDelagate;
+import com.example.gsyvideoplayer.delagate.TopicImageItemDelagate;
+import com.example.gsyvideoplayer.delagate.TopicVideoItemDelagate;
 import com.example.gsyvideoplayer.holder.RecyclerItemNormalHolder;
 import com.example.gsyvideoplayer.model.VideoModel;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
@@ -29,6 +27,8 @@ import com.volokh.danylo.visibility_utils.calculator.ListItemsVisibilityCalculat
 import com.volokh.danylo.visibility_utils.calculator.SingleListViewItemActiveCalculator;
 import com.volokh.danylo.visibility_utils.scroll_utils.ItemsPositionGetter;
 import com.volokh.danylo.visibility_utils.scroll_utils.RecyclerViewItemPositionGetter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +38,8 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
 
     private static final String TAG = RecyclerViewActivity.class.getSimpleName();
     RecyclerView videoList;
-
     LinearLayoutManager mLayoutManager;
-
-    RecyclerBaseAdapter recyclerBaseAdapter;
-
     List<VideoModel> dataList = new ArrayList<>();
-
     boolean mFull = false;
 
 
@@ -61,22 +56,20 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // 设置一个exit transition
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-            getWindow().setEnterTransition(new Explode());
-            getWindow().setExitTransition(new Explode());
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycler_view);
         videoList = (RecyclerView) findViewById(R.id.list_item_recycler);
-
-        resolveData();
-
-        final RecyclerNormalAdapter recyclerNormalAdapter = new RecyclerNormalAdapter(this, dataList);
         mLayoutManager = new LinearLayoutManager(this);
         videoList.setLayoutManager(mLayoutManager);
-        videoList.setAdapter(recyclerNormalAdapter);
+
+        initData();
+
+        final MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(this,dataList);
+        adapter.addItemViewDelegate(new TopicCommonItemDelagate());
+        adapter.addItemViewDelegate(new TopicImageItemDelagate());
+        adapter.addItemViewDelegate(new TopicVideoItemDelagate(this));
+        videoList.setAdapter(adapter);
+
         videoList.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -84,20 +77,34 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
                 if (ac == MotionEvent.ACTION_UP) {
                     //①如果当前界面没有播放则播放
                     // ②或者如果在播放，则判断播放的currentposition和现在的positon不一样才播放这个position
-                    int currentState = holder.getGsyVideoPlayer().getCurrentState();
-                    Log.i(TAG,"--->>>ACTION_UP position:"+newActiveViewPosition+",currentState:"+currentState);
-                    if(currentState != GSYVideoView.CURRENT_STATE_PLAYING || ( currentPlayPosition != newActiveViewPosition)){
-                        holder.autoPlay();
-                        currentPlayPosition = newActiveViewPosition;
+                    if(itemViewDelegate != null){
+                        try {
+                            TopicVideoItemDelagate itemDelagate = (TopicVideoItemDelagate) itemViewDelegate;
+                            int currentState = itemDelagate.getGsyVideoPlayer().getCurrentState();
+                            Log.i(TAG,"--->>>ACTION_UP position:"+newActiveViewPosition+",currentState:"+currentState);
+                            if(currentState != GSYVideoView.CURRENT_STATE_PLAYING || ( currentPlayPosition != newActiveViewPosition)){
+                                itemDelagate.autoPlay();
+                                currentPlayPosition = newActiveViewPosition;
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }
                 return false;
             }
         });
+
+        setCommonRV(adapter);
+    }
+
+    /**
+     * TODO:标准设置的写法，基本不用改
+     * @param adapter
+     */
+    private void setCommonRV(final MultiItemTypeAdapter adapter) {
         videoList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
             int firstVisibleItem, lastVisibleItem;
-
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
                 super.onScrollStateChanged(recyclerView, scrollState);
@@ -140,13 +147,13 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
                         Log.i(TAG, "--->>>mFull:" + mFull);
                         if (!mFull) {
                             GSYVideoPlayer.releaseAllVideos();
-                            recyclerNormalAdapter.notifyDataSetChanged();
+//                            recyclerNormalAdapter.notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
                         }
                     }
                 }
             }
         });
-
         mItemsPositionGetter = new RecyclerViewItemPositionGetter(mLayoutManager, videoList);
     }
 
@@ -179,6 +186,7 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
     @Override
     protected void onResume() {
         super.onResume();
+        //TODO:标准写法，基本不用改
         //item可见播放
         if (!dataList.isEmpty()) {
             // need to call this method from list view handler in order to have filled list
@@ -205,13 +213,40 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
     }
 
 
-    private void resolveData() {
-        for (int i = 0; i < 19; i++) {
-            VideoModel videoModel = new VideoModel(this);
-            dataList.add(videoModel);
-        }
-        if (recyclerBaseAdapter != null)
-            recyclerBaseAdapter.notifyDataSetChanged();
+    private void initData() {
+        VideoModel videoModel1 = new VideoModel(this);
+        videoModel1.setType("1");
+        dataList.add(videoModel1);
+
+        VideoModel videoModel2 = new VideoModel(this);
+        videoModel2.setType("2");
+        dataList.add(videoModel2);
+
+        VideoModel videoModel3 = new VideoModel(this);
+        videoModel3.setType("3");
+        videoModel3.setUrl("http://baobab.wdjcdn.com/14564977406580.mp4");
+        dataList.add(videoModel3);
+
+        VideoModel videoModel4 = new VideoModel(this);
+        videoModel4.setType("1");
+        dataList.add(videoModel4);
+
+        VideoModel videoModel5 = new VideoModel(this);
+        videoModel5.setType("2");
+        dataList.add(videoModel5);
+
+        VideoModel videoModel6 = new VideoModel(this);
+        videoModel6.setType("3");
+        videoModel6.setUrl("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4");
+        dataList.add(videoModel6);
+
+        VideoModel videoModel7 = new VideoModel(this);
+        videoModel7.setType("1");
+        dataList.add(videoModel7);
+
+        VideoModel videoModel8 = new VideoModel(this);
+        videoModel8.setType("2");
+        dataList.add(videoModel8);
     }
 
     @Override
@@ -223,14 +258,13 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
         }
     }
 
-    private RecyclerItemNormalHolder holder;
+    private ItemViewDelegate itemViewDelegate;
     private  int newActiveViewPosition;
     private int currentPlayPosition;
     @Override
-    public void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition, RecyclerItemNormalHolder holder) {
-//        mVisibilityUtilsCallback.setTitle("Active view at position " + newActiveViewPosition);
-
-        this.holder = holder;
+    public void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition, ItemViewDelegate itemViewDelegate) {
+        this.itemViewDelegate = itemViewDelegate;
         this.newActiveViewPosition = newActiveViewPosition;
     }
+
 }
