@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Explode;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.example.gsyvideoplayer.model.VideoModel;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
+import com.shuyu.gsyvideoplayer.video.base.GSYVideoView;
 import com.volokh.danylo.videolist.visibility_demo.adapter.items.VisibilityItem;
 import com.volokh.danylo.visibility_utils.calculator.DefaultSingleItemCalculatorCallback;
 import com.volokh.danylo.visibility_utils.calculator.ListItemsVisibilityCalculator;
@@ -67,7 +69,7 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycler_view);
-        videoList = (RecyclerView)findViewById(R.id.list_item_recycler);
+        videoList = (RecyclerView) findViewById(R.id.list_item_recycler);
 
         resolveData();
 
@@ -75,7 +77,23 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
         mLayoutManager = new LinearLayoutManager(this);
         videoList.setLayoutManager(mLayoutManager);
         videoList.setAdapter(recyclerNormalAdapter);
-
+        videoList.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int ac = event.getAction();
+                if (ac == MotionEvent.ACTION_UP) {
+                    //①如果当前界面没有播放则播放
+                    // ②或者如果在播放，则判断播放的currentposition和现在的positon不一样才播放这个position
+                    int currentState = holder.getGsyVideoPlayer().getCurrentState();
+                    Log.i(TAG,"--->>>ACTION_UP position:"+newActiveViewPosition+",currentState:"+currentState);
+                    if(currentState != GSYVideoView.CURRENT_STATE_PLAYING || ( currentPlayPosition != newActiveViewPosition)){
+                        holder.autoPlay();
+                        currentPlayPosition = newActiveViewPosition;
+                    }
+                }
+                return false;
+            }
+        });
         videoList.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             int firstVisibleItem, lastVisibleItem;
@@ -85,7 +103,7 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
                 super.onScrollStateChanged(recyclerView, scrollState);
                 //item可见播放
                 mScrollState = scrollState;
-                if(scrollState == RecyclerView.SCROLL_STATE_IDLE && !dataList.isEmpty()){
+                if (scrollState == RecyclerView.SCROLL_STATE_IDLE && !dataList.isEmpty()) {
                     mListItemVisibilityCalculator.onScrollStateIdle(
                             mItemsPositionGetter,
                             mLayoutManager.findFirstVisibleItemPosition(),
@@ -97,7 +115,7 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 //item可见播放
-                if(!dataList.isEmpty()){
+                if (!dataList.isEmpty()) {
                     mListItemVisibilityCalculator.onScroll(
                             mItemsPositionGetter,
                             mLayoutManager.findFirstVisibleItemPosition(),
@@ -106,21 +124,21 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
                 }
 
 
-                firstVisibleItem   = mLayoutManager.findFirstVisibleItemPosition();
+                firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
                 lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
                 //大于0说明有播放
                 if (GSYVideoManager.instance().getPlayPosition() >= 0) {
                     //当前播放的位置
                     int position = GSYVideoManager.instance().getPlayPosition();
-                    Log.i(TAG,"--->>>position:"+position);
+                    Log.i(TAG, "--->>>position:" + position);
                     //对应的播放列表TAG
                     if (GSYVideoManager.instance().getPlayTag().equals(RecyclerItemNormalHolder.TAG)
                             && (position < firstVisibleItem || position > lastVisibleItem)) {
 
                         //如果滑出去了上面和下面就是否，和今日头条一样
                         //是否全屏
-                        Log.i(TAG,"--->>>mFull:"+mFull);
-                        if(!mFull) {
+                        Log.i(TAG, "--->>>mFull:" + mFull);
+                        if (!mFull) {
                             GSYVideoPlayer.releaseAllVideos();
                             recyclerNormalAdapter.notifyDataSetChanged();
                         }
@@ -162,7 +180,7 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
     protected void onResume() {
         super.onResume();
         //item可见播放
-        if(!dataList.isEmpty()){
+        if (!dataList.isEmpty()) {
             // need to call this method from list view handler in order to have filled list
             videoList.post(new Runnable() {
                 @Override
@@ -198,15 +216,21 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
 
     @Override
     public void makeToast(String text) {
-        if(mToast != null){
+        if (mToast != null) {
             mToast.cancel();
             mToast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
             mToast.show();
         }
     }
 
+    private RecyclerItemNormalHolder holder;
+    private  int newActiveViewPosition;
+    private int currentPlayPosition;
     @Override
-    public void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition) {
+    public void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition, RecyclerItemNormalHolder holder) {
 //        mVisibilityUtilsCallback.setTitle("Active view at position " + newActiveViewPosition);
+
+        this.holder = holder;
+        this.newActiveViewPosition = newActiveViewPosition;
     }
 }

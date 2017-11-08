@@ -26,7 +26,7 @@ public class VisibilityItem implements ListItem {
 
     public interface ItemCallback {
         void makeToast(String text);
-        void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition);
+        void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition,RecyclerItemNormalHolder holder);
     }
 
     public VisibilityItem(ItemCallback callback) {
@@ -79,10 +79,8 @@ public class VisibilityItem implements ListItem {
 //            }
 //        }).start();
 
-        holder.autoPlay();
-
         mItemCallback.makeToast("New Active View at position " + newActiveViewPosition);
-        mItemCallback.onActiveViewChangedActive(newActiveView, newActiveViewPosition);
+        mItemCallback.onActiveViewChangedActive(newActiveView, newActiveViewPosition,holder);
     }
 
 

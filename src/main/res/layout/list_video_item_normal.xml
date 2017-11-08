@@ -7,6 +7,6 @@
   <com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
       android:id="@+id/video_item_player"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
+      android:layout_height="400dip"/>
 
 </RelativeLayout>

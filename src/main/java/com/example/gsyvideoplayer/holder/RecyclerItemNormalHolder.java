@@ -25,7 +25,11 @@ public class RecyclerItemNormalHolder extends RecyclerItemBaseHolder {
 
     protected Context context = null;
 
-//    @BindView(R.id.video_item_player)
+    public StandardGSYVideoPlayer getGsyVideoPlayer() {
+        return gsyVideoPlayer;
+    }
+
+    //    @BindView(R.id.video_item_player)
     StandardGSYVideoPlayer gsyVideoPlayer;
 
     ImageView imageView;
