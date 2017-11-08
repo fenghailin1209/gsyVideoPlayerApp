@@ -25,7 +25,6 @@ public class VisibilityItem implements ListItem {
 
 
     public interface ItemCallback {
-        void makeToast(String text);
         void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition,ItemViewDelegate itemViewDelegate);
     }
 
@@ -79,7 +78,6 @@ public class VisibilityItem implements ListItem {
 //            }
 //        }).start();
 
-        mItemCallback.makeToast("New Active View at position " + newActiveViewPosition);
         mItemCallback.onActiveViewChangedActive(newActiveView, newActiveViewPosition,itemViewDelegate);
     }
 
@@ -95,6 +93,5 @@ public class VisibilityItem implements ListItem {
 
     @Override
     public void deactivate(View currentView, int position) {
-        mItemCallback.makeToast("Deactivate View");
     }
 }

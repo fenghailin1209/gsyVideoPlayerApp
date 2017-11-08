@@ -8,5 +8,5 @@
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/ic_topic_img_demo" />
 </LinearLayout>

@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.gsyvideoplayer.delagate.TopicCommonItemDelagate;
 import com.example.gsyvideoplayer.delagate.TopicImageItemDelagate;
@@ -50,7 +49,6 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
     private ItemsPositionGetter mItemsPositionGetter;
 
     private int mScrollState;
-    private Toast mToast;
     //=========================== end =======================
 
 
@@ -64,7 +62,7 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
 
         initData();
 
-        final MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(this,dataList);
+        final MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(this, dataList);
         adapter.addItemViewDelegate(new TopicCommonItemDelagate());
         adapter.addItemViewDelegate(new TopicImageItemDelagate());
         adapter.addItemViewDelegate(new TopicVideoItemDelagate(this));
@@ -77,16 +75,16 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
                 if (ac == MotionEvent.ACTION_UP) {
                     //①如果当前界面没有播放则播放
                     // ②或者如果在播放，则判断播放的currentposition和现在的positon不一样才播放这个position
-                    if(itemViewDelegate != null){
+                    if (itemViewDelegate != null) {
                         try {
                             TopicVideoItemDelagate itemDelagate = (TopicVideoItemDelagate) itemViewDelegate;
                             int currentState = itemDelagate.getGsyVideoPlayer().getCurrentState();
-                            Log.i(TAG,"--->>>ACTION_UP position:"+newActiveViewPosition+",currentState:"+currentState);
-                            if(currentState != GSYVideoView.CURRENT_STATE_PLAYING || ( currentPlayPosition != newActiveViewPosition)){
+                            Log.i(TAG, "--->>>ACTION_UP position:" + newActiveViewPosition + ",currentState:" + currentState);
+                            if (currentState != GSYVideoView.CURRENT_STATE_PLAYING || (currentPlayPosition != newActiveViewPosition)) {
                                 itemDelagate.autoPlay();
                                 currentPlayPosition = newActiveViewPosition;
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -100,11 +98,13 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
 
     /**
      * TODO:标准设置的写法，基本不用改
+     *
      * @param adapter
      */
     private void setCommonRV(final MultiItemTypeAdapter adapter) {
         videoList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int firstVisibleItem, lastVisibleItem;
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
                 super.onScrollStateChanged(recyclerView, scrollState);
@@ -249,18 +249,10 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
         dataList.add(videoModel8);
     }
 
-    @Override
-    public void makeToast(String text) {
-        if (mToast != null) {
-            mToast.cancel();
-            mToast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-            mToast.show();
-        }
-    }
-
     private ItemViewDelegate itemViewDelegate;
-    private  int newActiveViewPosition;
+    private int newActiveViewPosition;
     private int currentPlayPosition;
+
     @Override
     public void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition, ItemViewDelegate itemViewDelegate) {
         this.itemViewDelegate = itemViewDelegate;
