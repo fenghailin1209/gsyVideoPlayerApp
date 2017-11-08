@@ -123,8 +123,7 @@ public class JumpUtils {
      */
     public static void goToVideoRecyclerPlayer(Activity activity) {
         Intent intent = new Intent(activity, RecyclerViewActivity.class);
-        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(activity);
-        ActivityCompat.startActivity(activity, intent, activityOptions.toBundle());
+        activity.startActivity(intent);
     }
 
     /**
