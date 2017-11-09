@@ -1,8 +1,6 @@
 package com.example.gsyvideoplayer;
 
 
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +15,6 @@ import com.example.gsyvideoplayer.delagate.TopicVideoItemDelagate;
 import com.example.gsyvideoplayer.holder.RecyclerItemNormalHolder;
 import com.example.gsyvideoplayer.model.VideoModel;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
-import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoView;
 import com.volokh.danylo.videolist.visibility_demo.adapter.items.VisibilityItem;
@@ -42,14 +39,14 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
     boolean mFull = false;
 
 
-    //=========================== start =======================
+    //TODO=========================== 真正关心 start =======================
     private final ListItemsVisibilityCalculator mListItemVisibilityCalculator =
             new SingleListViewItemActiveCalculator(new DefaultSingleItemCalculatorCallback(), dataList);
 
     private ItemsPositionGetter mItemsPositionGetter;
 
     private int mScrollState;
-    //=========================== end =======================
+    //TODO=========================== 真正关心 end =======================
 
 
     @Override
@@ -65,151 +62,34 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
         final MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(this, dataList);
         adapter.addItemViewDelegate(new TopicCommonItemDelagate());
         adapter.addItemViewDelegate(new TopicImageItemDelagate());
-        adapter.addItemViewDelegate(new TopicVideoItemDelagate(this));
+        adapter.addItemViewDelegate(new TopicVideoItemDelagate(this,TAG));
         videoList.setAdapter(adapter);
 
-        videoList.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int ac = event.getAction();
-                if (ac == MotionEvent.ACTION_UP) {
-                    //①如果当前界面没有播放则播放
-                    // ②或者如果在播放，则判断播放的currentposition和现在的positon不一样才播放这个position
-                    if (itemViewDelegate != null) {
-                        try {
-                            TopicVideoItemDelagate itemDelagate = (TopicVideoItemDelagate) itemViewDelegate;
-                            int currentState = itemDelagate.getGsyVideoPlayer().getCurrentState();
-                            Log.i(TAG, "--->>>ACTION_UP position:" + newActiveViewPosition + ",currentState:" + currentState);
-                            if (currentState != GSYVideoView.CURRENT_STATE_PLAYING || (currentPlayPosition != newActiveViewPosition)) {
-                                itemDelagate.autoPlay();
-                                currentPlayPosition = newActiveViewPosition;
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                return false;
-            }
-        });
+        setCommonRecycleViewOnTouchUpOperation(videoList);
 
-        setCommonRV(adapter);
-    }
-
-    /**
-     * TODO:标准设置的写法，基本不用改
-     *
-     * @param adapter
-     */
-    private void setCommonRV(final MultiItemTypeAdapter adapter) {
-        videoList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int firstVisibleItem, lastVisibleItem;
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
-                super.onScrollStateChanged(recyclerView, scrollState);
-                //item可见播放
-                mScrollState = scrollState;
-                if (scrollState == RecyclerView.SCROLL_STATE_IDLE && !dataList.isEmpty()) {
-                    mListItemVisibilityCalculator.onScrollStateIdle(
-                            mItemsPositionGetter,
-                            mLayoutManager.findFirstVisibleItemPosition(),
-                            mLayoutManager.findLastVisibleItemPosition());
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                //item可见播放
-                if (!dataList.isEmpty()) {
-                    mListItemVisibilityCalculator.onScroll(
-                            mItemsPositionGetter,
-                            mLayoutManager.findFirstVisibleItemPosition(),
-                            mLayoutManager.findLastVisibleItemPosition() - mLayoutManager.findFirstVisibleItemPosition() + 1,
-                            mScrollState);
-                }
-
-
-                firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
-                lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
-                //大于0说明有播放
-                if (GSYVideoManager.instance().getPlayPosition() >= 0) {
-                    //当前播放的位置
-                    int position = GSYVideoManager.instance().getPlayPosition();
-                    Log.i(TAG, "--->>>position:" + position);
-                    //对应的播放列表TAG
-                    if (GSYVideoManager.instance().getPlayTag().equals(RecyclerItemNormalHolder.TAG)
-                            && (position < firstVisibleItem || position > lastVisibleItem)) {
-
-                        //如果滑出去了上面和下面就是否，和今日头条一样
-                        //是否全屏
-                        Log.i(TAG, "--->>>mFull:" + mFull);
-                        if (!mFull) {
-                            GSYVideoPlayer.releaseAllVideos();
-//                            recyclerNormalAdapter.notifyDataSetChanged();
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                }
-            }
-        });
-        mItemsPositionGetter = new RecyclerViewItemPositionGetter(mLayoutManager, videoList);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        //如果旋转了就全屏
-        if (newConfig.orientation != ActivityInfo.SCREEN_ORIENTATION_USER) {
-            mFull = false;
-        } else {
-            mFull = true;
-        }
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (StandardGSYVideoPlayer.backFromWindowFull(this)) {
-            return;
-        }
-        super.onBackPressed();
+        setCommonRecycleView(adapter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        onVideoPause();
+    }
+
+    private void onVideoPause() {
         GSYVideoManager.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //TODO:标准写法，基本不用改
-        //item可见播放
-        if (!dataList.isEmpty()) {
-            // need to call this method from list view handler in order to have filled list
-            videoList.post(new Runnable() {
-                @Override
-                public void run() {
-
-                    mListItemVisibilityCalculator.onScrollStateIdle(
-                            mItemsPositionGetter,
-                            mLayoutManager.findFirstVisibleItemPosition(),
-                            mLayoutManager.findLastVisibleItemPosition());
-
-                }
-            });
-        }
-
-        GSYVideoManager.onResume();
+        onVideoResume();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        GSYVideoPlayer.releaseAllVideos();
+        onVideoDestory();
     }
 
 
@@ -249,14 +129,134 @@ public class RecyclerViewActivity extends AppCompatActivity implements Visibilit
         dataList.add(videoModel8);
     }
 
+    //TODO=========================== 真正关心 start =======================
+
+    private void setCommonRecycleViewOnTouchUpOperation(RecyclerView recyclerView) {
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int ac = event.getAction();
+                if (ac == MotionEvent.ACTION_UP) {
+                    //①如果两个位置不一样则播放position
+                    // ②如果两个位置一样，则判断如果没有播放才播放，反之不管
+                    if (itemViewDelegate != null) {
+                        try {
+                            TopicVideoItemDelagate itemDelagate = (TopicVideoItemDelagate) itemViewDelegate;
+                            int currentState = itemDelagate.getGsyVideoPlayer().getCurrentState();
+                            Log.i(TAG, "--->>>ACTION_UP position:" + newActiveViewPosition + ",currentState:" + currentState+",currentPlayPosition:"+currentPlayPosition);
+                            if (currentPlayPosition != newActiveViewPosition) {
+                                itemDelagate.autoPlay();
+                                currentPlayPosition = newActiveViewPosition;
+                            }else {
+                                if(currentState != GSYVideoView.CURRENT_STATE_PAUSE){
+                                    itemDelagate.autoPlay();
+                                    currentPlayPosition = newActiveViewPosition;
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    /**
+     * TODO:标准设置的写法，基本不用改
+     * @param adapter
+     */
+    private void setCommonRecycleView(final MultiItemTypeAdapter adapter) {
+        videoList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int firstVisibleItem, lastVisibleItem;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
+                super.onScrollStateChanged(recyclerView, scrollState);
+                //item可见播放
+                mScrollState = scrollState;
+                if (scrollState == RecyclerView.SCROLL_STATE_IDLE && !dataList.isEmpty()) {
+                    mListItemVisibilityCalculator.onScrollStateIdle(
+                            mItemsPositionGetter,
+                            mLayoutManager.findFirstVisibleItemPosition(),
+                            mLayoutManager.findLastVisibleItemPosition());
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //item可见播放
+                if (!dataList.isEmpty()) {
+                    mListItemVisibilityCalculator.onScroll(
+                            mItemsPositionGetter,
+                            mLayoutManager.findFirstVisibleItemPosition(),
+                            mLayoutManager.findLastVisibleItemPosition() - mLayoutManager.findFirstVisibleItemPosition() + 1,
+                            mScrollState);
+                }
+
+                //视频设置部分
+                firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
+                lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+                //大于0说明有播放
+                int sp = GSYVideoManager.instance().getPlayPosition();
+                if (sp >= 0) {
+                    //当前播放的位置
+                    int position = GSYVideoManager.instance().getPlayPosition();
+                    //对应的播放列表TAG
+                    String pTag = GSYVideoManager.instance().getPlayTag();
+                    Log.i(TAG, "--->>>sp:" + sp+",pTag:"+pTag);
+                    if (pTag.equals(RecyclerItemNormalHolder.TAG)
+                            && (position < firstVisibleItem || position > lastVisibleItem)) {
+                        //如果滑出去了上面和下面就是否，和今日头条一样
+                        //是否全屏
+                        if (!mFull) {
+                            onVideoDestory();
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            }
+        });
+        mItemsPositionGetter = new RecyclerViewItemPositionGetter(mLayoutManager, videoList);
+    }
+
+    /**
+     * TODO:标准写法，基本不用改
+     */
+    private void onVideoResume() {
+        //item可见播放
+        if (!dataList.isEmpty()) {
+            // need to call this method from list view handler in order to have filled list
+            videoList.post(new Runnable() {
+                @Override
+                public void run() {
+                    mListItemVisibilityCalculator.onScrollStateIdle(
+                            mItemsPositionGetter,
+                            mLayoutManager.findFirstVisibleItemPosition(),
+                            mLayoutManager.findLastVisibleItemPosition());
+                }
+            });
+        }
+
+        GSYVideoManager.onResume();
+    }
+
+    private void onVideoDestory() {
+        Log.i(TAG, "--->>>releaseAllVideos" );
+        GSYVideoPlayer.releaseAllVideos();
+    }
+
     private ItemViewDelegate itemViewDelegate;
     private int newActiveViewPosition;
     private int currentPlayPosition;
-
     @Override
     public void onActiveViewChangedActive(View newActiveView, int newActiveViewPosition, ItemViewDelegate itemViewDelegate) {
         this.itemViewDelegate = itemViewDelegate;
         this.newActiveViewPosition = newActiveViewPosition;
+        Log.i(TAG, "--->>>onActiveViewChangedActive position:" + newActiveViewPosition);
     }
 
+    //TODO=========================== 真正关心 end =======================
 }

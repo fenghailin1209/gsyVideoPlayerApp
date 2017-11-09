@@ -22,9 +22,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  */
 
 public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
-
-    public final static String TAG = TopicVideoItemDelagate.class.getSimpleName();
-
+    //TODO:注意这里的TAG要和外面界面的TAG一样，所以传过来
+    private String TAG;
     private StandardGSYVideoPlayer gsyVideoPlayer;
     private Context context;
     private ImageView imageView;
@@ -34,10 +33,11 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
         return gsyVideoPlayer;
     }
 
-    public TopicVideoItemDelagate(Context context) {
+    public TopicVideoItemDelagate(Context context,String TAG) {
         imageView = new ImageView(context);
         gsyVideoOptionBuilder = new GSYVideoOptionBuilder();
         this.context = context;
+        this.TAG = TAG;
     }
 
     @Override
@@ -52,8 +52,32 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
 
     @Override
     public void convert(ViewHolder holder, VideoModel item, int position) {
-        //目的是当视频item可见的时候回调出去
+        //增加封面
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        if (position % 2 == 0) {
+            imageView.setImageResource(R.mipmap.xxx1);
+        } else {
+            imageView.setImageResource(R.mipmap.xxx2);
+        }
+        if (imageView.getParent() != null) {
+            ViewGroup viewGroup = (ViewGroup) imageView.getParent();
+            viewGroup.removeView(imageView);
+        }
+
+        setCommonGSYVideoOptionBuilderOperation(holder, item, position);
+    }
+
+    /**
+     * 设置StandardGSYVideoPlayer的公共方法
+     * @param holder
+     * @param item
+     * @param position
+     */
+    private void setCommonGSYVideoOptionBuilderOperation(ViewHolder holder, VideoModel item, int position) {
+        //TODO:注意 目的是当视频item可见的时候回调出去
         item.onBindViewHolder(this);
+
+        String url = item.getUrl();
 
         gsyVideoPlayer = holder.getView(R.id.video_item_player);
         //fhl add 20171107
@@ -67,27 +91,11 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
                 JumpUtils.goToDetailPlayer((Activity) context);
             }
         });
-
-        //增加封面
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        if (position % 2 == 0) {
-            imageView.setImageResource(R.mipmap.xxx1);
-        } else {
-            imageView.setImageResource(R.mipmap.xxx2);
-        }
-        if (imageView.getParent() != null) {
-            ViewGroup viewGroup = (ViewGroup) imageView.getParent();
-            viewGroup.removeView(imageView);
-        }
-        String url;
-        String title = "这是title";
-        url = item.getUrl();
-
         gsyVideoOptionBuilder
                 .setIsTouchWiget(false)
                 .setThumbImageView(imageView)
                 .setUrl(url)
-                .setVideoTitle(title)
+                .setVideoTitle("")
                 .setCacheWithPlay(true)
                 .setRotateViewAuto(true)
                 .setLockLand(true)
