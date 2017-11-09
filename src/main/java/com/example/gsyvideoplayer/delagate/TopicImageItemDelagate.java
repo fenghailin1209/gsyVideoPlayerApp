@@ -25,7 +25,6 @@ public class TopicImageItemDelagate implements ItemViewDelegate<VideoModel>
     }
 
     @Override
-    public void convert(ViewHolder holder, VideoModel item, int position)
-    {
+    public void convert(ViewHolder holder, VideoModel item, int position) {
     }
 }

@@ -74,9 +74,6 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
      * @param position
      */
     private void setCommonGSYVideoOptionBuilderOperation(ViewHolder holder, VideoModel item, int position) {
-        //TODO:注意 目的是当视频item可见的时候回调出去
-        item.onBindViewHolder(this);
-
         String url = item.getUrl();
 
         gsyVideoPlayer = holder.getView(R.id.video_item_player);

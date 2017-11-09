@@ -1,12 +1,10 @@
 package com.example.gsyvideoplayer.model;
 
-import com.volokh.danylo.videolist.visibility_demo.adapter.items.VisibilityItem;
-
 /**
  * Created by shuyu on 2016/11/11.
  */
 
-public class VideoModel extends VisibilityItem {
+public class VideoModel {
     private boolean isAutoPlay;
 
     private String type;//1 文字类item，2 纯图片，3 视频
@@ -18,14 +16,6 @@ public class VideoModel extends VisibilityItem {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public VideoModel(ItemCallback callback) {
-        super(callback);
-    }
-
-    public VideoModel() {
-        super(null);
     }
 
     public boolean isAutoPlay() {
