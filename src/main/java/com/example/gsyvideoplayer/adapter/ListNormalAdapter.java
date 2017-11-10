@@ -63,7 +63,7 @@ public class ListNormalAdapter extends BaseAdapter {
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.list_video_item_normal, null);
+            convertView = inflater.inflate(R.layout.list_video_item_normal1, null);
             holder.gsyVideoPlayer = (SampleCoverVideo) convertView.findViewById(R.id.video_item_player);
             convertView.setTag(holder);
         } else {

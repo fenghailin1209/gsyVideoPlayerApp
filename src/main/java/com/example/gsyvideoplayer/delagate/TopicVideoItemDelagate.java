@@ -5,11 +5,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.example.gsyvideoplayer.R;
-import com.example.gsyvideoplayer.RecyclerViewActivity;
+import com.example.gsyvideoplayer.dao.OnTopicVideoClickListener;
 import com.example.gsyvideoplayer.listener.SampleListener;
 import com.example.gsyvideoplayer.model.VideoModel;
+import com.example.gsyvideoplayer.utils.AndroidUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
@@ -27,13 +29,13 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
     private Context context;
     private ImageView imageView;
     private GSYVideoOptionBuilder gsyVideoOptionBuilder;
-    private RecyclerViewActivity.OnTopicVideoClickListener listener;
+    private OnTopicVideoClickListener listener;
 
     public StandardGSYVideoPlayer getGsyVideoPlayer() {
         return gsyVideoPlayer;
     }
 
-    public TopicVideoItemDelagate(Context context,String TAG,RecyclerViewActivity.OnTopicVideoClickListener listener) {
+    public TopicVideoItemDelagate(Context context, String TAG, OnTopicVideoClickListener listener) {
         imageView = new ImageView(context);
         gsyVideoOptionBuilder = new GSYVideoOptionBuilder();
         this.context = context;
@@ -43,7 +45,7 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.list_video_item_normal;
+        return R.layout.item_rv_video;
     }
 
     @Override
@@ -70,26 +72,26 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
 
     /**
      * 设置StandardGSYVideoPlayer的公共方法
+     *
      * @param holder
      * @param item
      * @param position
      */
-    private void setCommonGSYVideoOptionBuilderOperation(ViewHolder holder, VideoModel item, int position) {
+    private void setCommonGSYVideoOptionBuilderOperation(final ViewHolder holder, VideoModel item, int position) {
         String url = item.getUrl();
 
-        gsyVideoPlayer = holder.getView(R.id.video_item_player);
-        //fhl add 20171107
-        gsyVideoPlayer.setIsCanTouchChangeView(false);
-        gsyVideoPlayer.setPrepareFinishIsShowStartButton(false);
-        gsyVideoPlayer.setIsShowBottomContainer(false);
-        gsyVideoPlayer.setOnVideoClickListener(new StandardGSYVideoPlayer.OnVideoClickListener() {
-            @Override
-            public void OnVideoClick() {
-                if(listener != null){
-                    listener.onVideoClick(gsyVideoPlayer);
-                }
-            }
-        });
+        RelativeLayout id_video_item_player_list_father_ll = holder.getView(R.id.id_video_item_player_list_father_ll);
+
+        gsyVideoPlayer = new StandardGSYVideoPlayer(context);
+        int w = AndroidUtil.getScreenWidth(context);
+        int h = AndroidUtil.dip2px(context, 200);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(w, h);
+        gsyVideoPlayer.setLayoutParams(params);
+
+        id_video_item_player_list_father_ll.addView(gsyVideoPlayer);
+
+        setGSYCommonParames(gsyVideoPlayer, holder, listener);
+
         gsyVideoOptionBuilder
                 .setIsTouchWiget(false)
                 .setThumbImageView(imageView)
@@ -112,7 +114,6 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
                             //静音
                             GSYVideoManager.instance().setNeedMute(true);
                         }
-
                     }
 
                     @Override
@@ -131,27 +132,25 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
                     }
                 }).build(gsyVideoPlayer);
         Log.i(TAG, "--->>>build");
-
-        //增加title
-        gsyVideoPlayer.getTitleTextView().setVisibility(View.GONE);
-
-        //设置返回键
-        gsyVideoPlayer.getBackButton().setVisibility(View.GONE);
-
-        //设置全屏按键功能
-        gsyVideoPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resolveFullBtn(gsyVideoPlayer);
-            }
-        });
     }
 
-    /**
-     * 全屏幕按键处理
-     */
-    private void resolveFullBtn(final StandardGSYVideoPlayer standardGSYVideoPlayer) {
-        standardGSYVideoPlayer.startWindowFullscreen(context, true, true);
+    public static void setGSYCommonParames(final StandardGSYVideoPlayer gsyVideoPlayer, final ViewHolder holder, final OnTopicVideoClickListener listener) {
+        //fhl add 20171107
+        gsyVideoPlayer.setIsCanTouchChangeView(false);
+        gsyVideoPlayer.setPrepareFinishIsShowStartButton(false);
+        gsyVideoPlayer.setIsShowBottomContainer(false);
+        //增加title
+        gsyVideoPlayer.getTitleTextView().setVisibility(View.GONE);
+        //设置返回键
+        gsyVideoPlayer.getBackButton().setVisibility(View.GONE);
+        gsyVideoPlayer.setOnVideoClickListener(new StandardGSYVideoPlayer.OnVideoClickListener() {
+            @Override
+            public void OnVideoClick() {
+                if (listener != null) {
+                    listener.onVideoClick(gsyVideoPlayer, holder);
+                }
+            }
+        });
     }
 
 }

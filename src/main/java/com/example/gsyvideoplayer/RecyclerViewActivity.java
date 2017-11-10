@@ -1,34 +1,37 @@
 package com.example.gsyvideoplayer;
 
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
+import android.widget.RelativeLayout;
 
+import com.example.gsyvideoplayer.dao.OnTopicVideoClickListener;
 import com.example.gsyvideoplayer.delagate.TopicCommonItemDelagate;
 import com.example.gsyvideoplayer.delagate.TopicImageItemDelagate;
 import com.example.gsyvideoplayer.delagate.TopicVideoItemDelagate;
 import com.example.gsyvideoplayer.holder.RecyclerItemNormalHolder;
 import com.example.gsyvideoplayer.model.VideoModel;
 import com.example.gsyvideoplayer.utils.AndroidUtil;
-import com.example.gsyvideoplayer.utils.JumpUtils;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.shuyu.gsyvideoplayer.video.base.GSYVideoView.CURRENT_STATE_PLAYING;
 
-public class RecyclerViewActivity extends Activity  {
+public class RecyclerViewActivity extends AppCompatActivity implements OnTopicVideoClickListener {
 
+    public static final int REQUEST_CODE = 1;
     private static final String TAG = RecyclerViewActivity.class.getSimpleName();
     RecyclerView videoList;
     LinearLayoutManager mLayoutManager;
@@ -38,16 +41,14 @@ public class RecyclerViewActivity extends Activity  {
     int firstVisibleItem, lastVisibleItem;
     private MultiItemTypeAdapter adapter;
     private Context context;
-    private StandardGSYVideoPlayer gsyVideoPlayer;
-
-    public interface OnTopicVideoClickListener{
-        public void onVideoClick(StandardGSYVideoPlayer gsyVideoPlayer);
-    }
+    private ViewHolder holder;
+    public static StandardGSYVideoPlayer gsyVideoPlayer;
+    private RelativeLayout id_video_item_player_list_father_ll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
+//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
         context = this;
         setContentView(R.layout.activity_recycler_view);
         videoList = (RecyclerView) findViewById(R.id.list_item_recycler);
@@ -59,14 +60,7 @@ public class RecyclerViewActivity extends Activity  {
         adapter = new MultiItemTypeAdapter(this, dataList);
         adapter.addItemViewDelegate(new TopicCommonItemDelagate());
         adapter.addItemViewDelegate(new TopicImageItemDelagate());
-        adapter.addItemViewDelegate(new TopicVideoItemDelagate(this, TAG, new OnTopicVideoClickListener() {
-            @Override
-            public void onVideoClick(StandardGSYVideoPlayer gsyVideoPlayer) {
-                RecyclerViewActivity.this.gsyVideoPlayer = gsyVideoPlayer;
-                //支持旋转全屏的详情模式
-                JumpUtils.goToDetailPlayer((Activity) context);
-            }
-        }));
+        adapter.addItemViewDelegate(new TopicVideoItemDelagate(this, TAG, this));
         videoList.setAdapter(adapter);
 
         setCommonRecycleView(adapter);
@@ -119,7 +113,8 @@ public class RecyclerViewActivity extends Activity  {
         dataList.add(videoModel5);
 
         VideoModel videoModel6 = new VideoModel();
-        videoModel6.setType("2");
+        videoModel6.setType("3");
+        videoModel6.setUrl("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4");
         dataList.add(videoModel6);
 
         VideoModel videoModel7 = new VideoModel();
@@ -127,8 +122,7 @@ public class RecyclerViewActivity extends Activity  {
         dataList.add(videoModel7);
 
         VideoModel videoModel8 = new VideoModel();
-        videoModel8.setType("3");
-        videoModel8.setUrl("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4");
+        videoModel8.setType("2");
         dataList.add(videoModel8);
     }
 
@@ -144,6 +138,7 @@ public class RecyclerViewActivity extends Activity  {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
                 super.onScrollStateChanged(recyclerView, scrollState);
+                Log.i(TAG,"--->>>onScrollStateChanged firstVisibleItem:"+firstVisibleItem+",lastVisibleItem:"+lastVisibleItem);
                 for (int postion = firstVisibleItem; postion <= lastVisibleItem; postion++) {
                         VideoModel model = dataList.get(postion);
                         String type = model.getType();
@@ -153,7 +148,8 @@ public class RecyclerViewActivity extends Activity  {
 //                        View view = recyclerView.getChildAt(postion);
                             //这两个方法都是获取的adapter的绝对view
                             View view = mLayoutManager.findViewByPosition(postion);
-                            StandardGSYVideoPlayer standardGSYVideoPlayer = (StandardGSYVideoPlayer) view.findViewById(R.id.video_item_player);
+                            RelativeLayout id_video_item_player_list_father_ll = (RelativeLayout) view.findViewById(R.id.id_video_item_player_list_father_ll);
+                            StandardGSYVideoPlayer standardGSYVideoPlayer  = (StandardGSYVideoPlayer) id_video_item_player_list_father_ll.getChildAt(0);
                             int itemHeight = view.getHeight();
                             if (view != null) {
                                 int[] location = new int[2];
@@ -161,9 +157,11 @@ public class RecyclerViewActivity extends Activity  {
                                 int locationY = (int) (location[1] - AndroidUtil.getStatusBarHeight(context) - getResources().getDimension(R.dimen.topic_video_height));
                                 int rvHeight = recyclerView.getMeasuredHeight();
                                 int state = standardGSYVideoPlayer.getCurrentState();
+                                Log.i(TAG,"--->>>locationY"+locationY+",rvHeight:"+rvHeight+",state:"+state+",itemHeight:"+itemHeight);
                                 if (locationY > -(itemHeight / 2) && locationY < rvHeight - (itemHeight / 2)) {
                                     if(state != CURRENT_STATE_PLAYING){
                                         standardGSYVideoPlayer.startPlayLogic();
+                                        Log.i(TAG,"--->>>startPlayLogic");
                                     }
                                 } else {
                                     onVideoDestory();
@@ -177,7 +175,7 @@ public class RecyclerViewActivity extends Activity  {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                gsyVideoPlayer = null;
+//                gsyVideoPlayer = null;
 
                 //视频设置部分
                 firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
@@ -217,12 +215,29 @@ public class RecyclerViewActivity extends Activity  {
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        //如果是点击过去则回来还继续播放
-        if(gsyVideoPlayer != null){
-            gsyVideoPlayer.startPlayLogic();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE && resultCode == DetailPlayer.RESURT_CODE){
+            GSYVideoManager.instance().setNeedMute(true);
+            id_video_item_player_list_father_ll.addView(gsyVideoPlayer);
+            TopicVideoItemDelagate.setGSYCommonParames(gsyVideoPlayer,this.holder,RecyclerViewActivity.this);
+            onVideoResume();
         }
     }
+
+    @Override
+    public void onVideoClick(StandardGSYVideoPlayer gsyVideoPlayer, ViewHolder holder) {
+        this.holder = holder;
+        RecyclerViewActivity.gsyVideoPlayer = gsyVideoPlayer;
+        Log.i(TAG, "--->>>gsyVideoPlayer1:"+RecyclerViewActivity.gsyVideoPlayer+",holder:"+holder);
+        id_video_item_player_list_father_ll = holder.getView(R.id.id_video_item_player_list_father_ll);
+        id_video_item_player_list_father_ll.removeView(gsyVideoPlayer);
+        Log.i(TAG, "--->>>gsyVideoPlayer2:"+RecyclerViewActivity.gsyVideoPlayer);
+
+        Intent intent = new Intent(context, DetailPlayer.class);
+        startActivityForResult(intent,REQUEST_CODE);
+    }
+
+
     //TODO=========================== 真正关心 end =======================
 }
