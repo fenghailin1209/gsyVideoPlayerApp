@@ -1,6 +1,5 @@
 package com.example.gsyvideoplayer.delagate;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -8,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.gsyvideoplayer.R;
+import com.example.gsyvideoplayer.RecyclerViewActivity;
 import com.example.gsyvideoplayer.listener.SampleListener;
 import com.example.gsyvideoplayer.model.VideoModel;
-import com.example.gsyvideoplayer.utils.JumpUtils;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
@@ -28,16 +27,18 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
     private Context context;
     private ImageView imageView;
     private GSYVideoOptionBuilder gsyVideoOptionBuilder;
+    private RecyclerViewActivity.OnTopicVideoClickListener listener;
 
     public StandardGSYVideoPlayer getGsyVideoPlayer() {
         return gsyVideoPlayer;
     }
 
-    public TopicVideoItemDelagate(Context context,String TAG) {
+    public TopicVideoItemDelagate(Context context,String TAG,RecyclerViewActivity.OnTopicVideoClickListener listener) {
         imageView = new ImageView(context);
         gsyVideoOptionBuilder = new GSYVideoOptionBuilder();
         this.context = context;
         this.TAG = TAG;
+        this.listener = listener;
     }
 
     @Override
@@ -84,8 +85,9 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
         gsyVideoPlayer.setOnVideoClickListener(new StandardGSYVideoPlayer.OnVideoClickListener() {
             @Override
             public void OnVideoClick() {
-                //支持旋转全屏的详情模式
-                JumpUtils.goToDetailPlayer((Activity) context);
+                if(listener != null){
+                    listener.onVideoClick(gsyVideoPlayer);
+                }
             }
         });
         gsyVideoOptionBuilder
@@ -152,9 +154,4 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
         standardGSYVideoPlayer.startWindowFullscreen(context, true, true);
     }
 
-    public void autoPlay() {
-        if (gsyVideoPlayer != null) {
-            gsyVideoPlayer.startPlayLogic();
-        }
-    }
 }

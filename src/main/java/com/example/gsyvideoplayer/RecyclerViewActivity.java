@@ -16,6 +16,7 @@ import com.example.gsyvideoplayer.delagate.TopicVideoItemDelagate;
 import com.example.gsyvideoplayer.holder.RecyclerItemNormalHolder;
 import com.example.gsyvideoplayer.model.VideoModel;
 import com.example.gsyvideoplayer.utils.AndroidUtil;
+import com.example.gsyvideoplayer.utils.JumpUtils;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
@@ -26,7 +27,7 @@ import java.util.List;
 
 import static com.shuyu.gsyvideoplayer.video.base.GSYVideoView.CURRENT_STATE_PLAYING;
 
-public class RecyclerViewActivity extends Activity {
+public class RecyclerViewActivity extends Activity  {
 
     private static final String TAG = RecyclerViewActivity.class.getSimpleName();
     RecyclerView videoList;
@@ -37,6 +38,11 @@ public class RecyclerViewActivity extends Activity {
     int firstVisibleItem, lastVisibleItem;
     private MultiItemTypeAdapter adapter;
     private Context context;
+    private StandardGSYVideoPlayer gsyVideoPlayer;
+
+    public interface OnTopicVideoClickListener{
+        public void onVideoClick(StandardGSYVideoPlayer gsyVideoPlayer);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,14 @@ public class RecyclerViewActivity extends Activity {
         adapter = new MultiItemTypeAdapter(this, dataList);
         adapter.addItemViewDelegate(new TopicCommonItemDelagate());
         adapter.addItemViewDelegate(new TopicImageItemDelagate());
-        adapter.addItemViewDelegate(new TopicVideoItemDelagate(this, TAG));
+        adapter.addItemViewDelegate(new TopicVideoItemDelagate(this, TAG, new OnTopicVideoClickListener() {
+            @Override
+            public void onVideoClick(StandardGSYVideoPlayer gsyVideoPlayer) {
+                RecyclerViewActivity.this.gsyVideoPlayer = gsyVideoPlayer;
+                //支持旋转全屏的详情模式
+                JumpUtils.goToDetailPlayer((Activity) context);
+            }
+        }));
         videoList.setAdapter(adapter);
 
         setCommonRecycleView(adapter);
@@ -66,6 +79,7 @@ public class RecyclerViewActivity extends Activity {
     }
 
     private void onVideoPause() {
+        Log.i(TAG, "--->>>onVideoPause");
         GSYVideoManager.onPause();
     }
 
@@ -163,6 +177,8 @@ public class RecyclerViewActivity extends Activity {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                gsyVideoPlayer = null;
+
                 //视频设置部分
                 firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
                 lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
@@ -191,12 +207,22 @@ public class RecyclerViewActivity extends Activity {
      * TODO:标准写法，基本不用改
      */
     private void onVideoResume() {
+        Log.i(TAG, "--->>>onVideoResume");
         GSYVideoManager.onResume();
     }
 
     private void onVideoDestory() {
         Log.i(TAG, "--->>>releaseAllVideos");
         GSYVideoPlayer.releaseAllVideos();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //如果是点击过去则回来还继续播放
+        if(gsyVideoPlayer != null){
+            gsyVideoPlayer.startPlayLogic();
+        }
     }
     //TODO=========================== 真正关心 end =======================
 }
