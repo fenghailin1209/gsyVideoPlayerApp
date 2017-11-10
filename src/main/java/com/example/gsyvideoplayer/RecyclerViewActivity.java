@@ -157,7 +157,8 @@ public class RecyclerViewActivity extends AppCompatActivity implements OnTopicVi
                                 int locationY = (int) (location[1] - AndroidUtil.getStatusBarHeight(context) - getResources().getDimension(R.dimen.topic_video_height));
                                 int rvHeight = recyclerView.getMeasuredHeight();
                                 int state = standardGSYVideoPlayer.getCurrentState();
-                                Log.i(TAG,"--->>>locationY"+locationY+",rvHeight:"+rvHeight+",state:"+state+",itemHeight:"+itemHeight);
+                                int lastState = GSYVideoManager.instance().getLastState();
+                                Log.i(TAG,"--->>>locationY"+locationY+",rvHeight:"+rvHeight+",state:"+state+",itemHeight:"+itemHeight+",lastState:"+lastState);
                                 if (locationY > -(itemHeight / 2) && locationY < rvHeight - (itemHeight / 2)) {
                                     if(state != CURRENT_STATE_PLAYING){
                                         standardGSYVideoPlayer.startPlayLogic();
@@ -219,8 +220,8 @@ public class RecyclerViewActivity extends AppCompatActivity implements OnTopicVi
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE && resultCode == DetailPlayer.RESURT_CODE){
             GSYVideoManager.instance().setNeedMute(true);
-            id_video_item_player_list_father_ll.addView(gsyVideoPlayer);
             TopicVideoItemDelagate.setGSYCommonParames(gsyVideoPlayer,this.holder,RecyclerViewActivity.this);
+            id_video_item_player_list_father_ll.addView(gsyVideoPlayer);
             onVideoResume();
         }
     }

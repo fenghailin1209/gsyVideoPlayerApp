@@ -33,7 +33,7 @@ public class DetailPlayer extends AppCompatActivity {
         gsyVideoPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"--->>>getFullscreenButton onClick");
+                Log.i(TAG, "--->>>getFullscreenButton onClick");
                 resolveFullBtn(gsyVideoPlayer);
             }
         });
@@ -59,11 +59,12 @@ public class DetailPlayer extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            gsyVideoPlayer.hideAllWidget();
             id_video_play_father_rl.removeView(gsyVideoPlayer);
             setResult(RESURT_CODE);
             finish();
             return false;
-        }else {
+        } else {
             return super.onKeyDown(keyCode, event);
         }
     }

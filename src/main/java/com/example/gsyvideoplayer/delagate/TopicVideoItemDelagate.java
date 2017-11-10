@@ -24,7 +24,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
     //TODO:注意这里的TAG要和外面界面的TAG一样，所以传过来
-    private String TAG;
+    private static String TAG;
     private StandardGSYVideoPlayer gsyVideoPlayer;
     private Context context;
     private ImageView imageView;
@@ -109,7 +109,6 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
                     @Override
                     public void onPrepared(String url, Object... objects) {
                         super.onPrepared(url, objects);
-                        Log.i(TAG, "--->>>!gsyVideoPlayer.isIfCurrentIsFullscreen(): " + !gsyVideoPlayer.isIfCurrentIsFullscreen());
                         if (!gsyVideoPlayer.isIfCurrentIsFullscreen()) {
                             //静音
                             GSYVideoManager.instance().setNeedMute(true);
@@ -119,7 +118,6 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
                     @Override
                     public void onQuitFullscreen(String url, Object... objects) {
                         super.onQuitFullscreen(url, objects);
-                        Log.i(TAG, "--->>>onQuitFullscreen");
                         //全屏不静音
                         GSYVideoManager.instance().setNeedMute(true);
                     }
@@ -127,14 +125,13 @@ public class TopicVideoItemDelagate implements ItemViewDelegate<VideoModel> {
                     @Override
                     public void onEnterFullscreen(String url, Object... objects) {
                         super.onEnterFullscreen(url, objects);
-                        Log.i(TAG, "--->>>onEnterFullscreen");
                         GSYVideoManager.instance().setNeedMute(false);
                     }
                 }).build(gsyVideoPlayer);
-        Log.i(TAG, "--->>>build");
     }
 
     public static void setGSYCommonParames(final StandardGSYVideoPlayer gsyVideoPlayer, final ViewHolder holder, final OnTopicVideoClickListener listener) {
+        Log.i(TAG, "--->>>setGSYCommonParames");
         //fhl add 20171107
         gsyVideoPlayer.setIsCanTouchChangeView(false);
         gsyVideoPlayer.setPrepareFinishIsShowStartButton(false);

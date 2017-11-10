@@ -362,7 +362,7 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
      * 点击触摸显示和隐藏逻辑
      */
     @Override
-    protected void onClickUiToggle() {
+    public void onClickUiToggle() {
         Log.i(TAG, "--->>>onClickUiToggle mCurrentState:" + mCurrentState);
         if (mIfCurrentIsFullscreen && mLockCurScreen && mNeedLockFull) {
             setViewShowState(mLockScreen, VISIBLE);
@@ -419,7 +419,7 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
     }
 
     @Override
-    protected void hideAllWidget() {
+    public void hideAllWidget() {
         setViewShowState(mBottomContainer, INVISIBLE);
         setViewShowState(mTopContainer, INVISIBLE);
         setViewShowState(mBottomProgressBar, VISIBLE);
@@ -428,7 +428,7 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
 
 
     @Override
-    protected void changeUiToNormal() {
+    public void changeUiToNormal() {
         Debuger.printfLog("changeUiToNormal");
 
         setViewShowState(mTopContainer, VISIBLE);

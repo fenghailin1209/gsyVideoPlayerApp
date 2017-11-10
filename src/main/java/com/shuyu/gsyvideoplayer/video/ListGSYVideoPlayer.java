@@ -153,7 +153,7 @@ public class ListGSYVideoPlayer extends StandardGSYVideoPlayer {
     }
 
     @Override
-    protected void changeUiToNormal() {
+    public void changeUiToNormal() {
         super.changeUiToNormal();
         if (mHadPlay && mPlayPosition < (mUriList.size() - 1)) {
             setViewShowState(mThumbImageViewLayout, GONE);
